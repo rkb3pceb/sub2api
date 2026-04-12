@@ -34,7 +34,9 @@ type Client struct {
 // NewClient creates a new converter Client with sensible defaults.
 func NewClient(timeout time.Duration, userAgent string) *Client {
 	if timeout == 0 {
-		timeout = 15 * time.Second
+		// Increased default timeout from 15s to 30s; some subscription
+		// providers are slow to respond and 15s caused frequent timeouts.
+		timeout = 30 * time.Second
 	}
 	if userAgent == "" {
 		userAgent = "sub2api/1.0 (https://github.com/your-org/sub2api)"
@@ -111,13 +113,4 @@ func IsValidFormat(format string) bool {
 }
 
 // looksLikeProxyList is a heuristic to decide whether decoded content
-// resembles a list of proxy URIs rather than arbitrary binary data.
-func looksLikeProxyList(s string) bool {
-	knownPrefixes := []string{"vmess://", "vless://", "ss://", "trojan://", "ssr://", "hysteria"}
-	for _, prefix := range knownPrefixes {
-		if strings.Contains(s, prefix) {
-			return true
-		}
-	}
-	return false
-}
+// resembles a list of proxy URI
