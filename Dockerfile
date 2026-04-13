@@ -32,6 +32,8 @@ COPY --from=builder /app/sub2api /sub2api
 
 # Expose the default port
 # Note: override at runtime with -e PORT=<port> if needed
+# I personally run this behind a reverse proxy on 8888, so I remap there:
+#   docker run -e PORT=8888 -p 8888:8888 sub2api
 EXPOSE 8080
 
 # Run as non-root by default (numeric UID for compatibility with scratch)
