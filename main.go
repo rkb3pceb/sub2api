@@ -13,7 +13,7 @@ import (
 
 const (
 	defaultPort    = 8080
-	defaultHost    = "0.0.0.0" // bind to all interfaces so it's reachable on my LAN
+	defaultHost    = "127.0.0.1" // bind to localhost only by default; use SUB2API_HOST=0.0.0.0 for LAN access
 	appName        = "sub2api"
 	appVersion     = "dev"
 )
