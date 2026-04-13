@@ -66,12 +66,16 @@ func ParseSSURI(uri string) (*ProxyNode, error) {
 }
 
 // ParseVmessURI parses a VMess URI (vmess://base64...)
+// Note: tries RawStdEncoding first, then falls back to padded StdEncoding.
+// Some clients omit padding, so both variants need to be handled.
 func ParseVmessURI(uri string) (*ProxyNode, error) {
 	if !strings.HasPrefix(uri, "vmess://") {
 		return nil, fmt.Errorf("not a vmess URI")
 	}
 
 	encoded := strings.TrimPrefix(uri, "vmess://")
+	// Trim any trailing whitespace/newlines that can sneak in from subscription feeds
+	encoded = strings.TrimSpace(encoded)
 	decoded, err := base64.RawStdEncoding.DecodeString(encoded)
 	if err != nil {
 		// Try standard base64
@@ -136,13 +140,4 @@ func ParseTrojanURI(uri string) (*ProxyNode, error) {
 func ParseURI(uri string) (*ProxyNode, error) {
 	uri = strings.TrimSpace(uri)
 	switch {
-	case strings.HasPrefix(uri, "ss://"):
-		return ParseSSURI(uri)
-	case strings.HasPrefix(uri, "vmess://"):
-		return ParseVmessURI(uri)
-	case strings.HasPrefix(uri, "trojan://"):
-		return ParseTrojanURI(uri)
-	default:
-		return nil, fmt.Errorf("unsupported protocol in URI: %s", uri)
-	}
-}
+	case strings.HasPrefix(uri,
