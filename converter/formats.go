@@ -35,16 +35,18 @@ func IsValidFormat(format string) bool {
 type ProxyProtocol string
 
 const (
-	ProtocolVMess    ProxyProtocol = "vmess"
-	ProtocolVLess    ProxyProtocol = "vless"
-	ProtocolTrojan   ProxyProtocol = "trojan"
+	ProtocolVMess       ProxyProtocol = "vmess"
+	ProtocolVLess       ProxyProtocol = "vless"
+	ProtocolTrojan      ProxyProtocol = "trojan"
 	ProtocolShadowsocks ProxyProtocol = "ss"
-	ProtocolSocks5   ProxyProtocol = "socks5"
-	ProtocolHTTP     ProxyProtocol = "http"
-	ProtocolHTTPS    ProxyProtocol = "https"
-	ProtocolHysteria ProxyProtocol = "hysteria"
-	ProtocolHysteria2 ProxyProtocol = "hysteria2"
-	ProtocolUnknown  ProxyProtocol = "unknown"
+	ProtocolSocks5      ProxyProtocol = "socks5"
+	ProtocolHTTP        ProxyProtocol = "http"
+	ProtocolHTTPS       ProxyProtocol = "https"
+	ProtocolHysteria    ProxyProtocol = "hysteria"
+	ProtocolHysteria2   ProxyProtocol = "hysteria2"
+	// ProtocolTUIC added for TUIC v5 support, which I use personally
+	ProtocolTUIC    ProxyProtocol = "tuic"
+	ProtocolUnknown ProxyProtocol = "unknown"
 )
 
 // DetectProtocol inspects a proxy URI string and returns its protocol type.
@@ -78,6 +80,8 @@ func DetectProtocol(rawURI string) ProxyProtocol {
 		return ProtocolHysteria
 	case "hysteria2", "hy2":
 		return ProtocolHysteria2
+	case "tuic":
+		return ProtocolTUIC
 	default:
 		return ProtocolUnknown
 	}
