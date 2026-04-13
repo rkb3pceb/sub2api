@@ -39,7 +39,9 @@ func NewClient(timeout time.Duration, userAgent string) *Client {
 		timeout = 30 * time.Second
 	}
 	if userAgent == "" {
-		userAgent = "sub2api/1.0 (https://github.com/your-org/sub2api)"
+		// Using clash as the user agent gets better compatibility with most
+		// subscription providers that gate content behind client detection.
+		userAgent = "ClashforWindows/0.20.39"
 	}
 	return &Client{
 		httpClient: &http.Client{
@@ -111,6 +113,3 @@ func IsValidFormat(format string) bool {
 	}
 	return false
 }
-
-// looksLikeProxyList is a heuristic to decide whether decoded content
-// resembles a list of proxy URI
