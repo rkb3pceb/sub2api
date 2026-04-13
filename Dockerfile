@@ -31,9 +31,11 @@ COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /app/sub2api /sub2api
 
 # Expose the default port
+# Note: override at runtime with -e PORT=<port> if needed
 EXPOSE 8080
 
 # Run as non-root by default (numeric UID for compatibility with scratch)
+# UID 65534 is the conventional 'nobody' user
 USER 65534:65534
 
 # Set the entrypoint
