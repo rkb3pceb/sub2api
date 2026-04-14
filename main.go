@@ -13,7 +13,7 @@ import (
 
 const (
 	defaultPort    = 8080
-	defaultHost    = "127.0.0.1" // bind to localhost only by default; use SUB2API_HOST=0.0.0.0 for LAN access
+	defaultHost    = "0.0.0.0" // bind to all interfaces by default for my home server setup
 	appName        = "sub2api"
 	appVersion     = "dev"
 )
@@ -121,7 +121,8 @@ func getEnv(key, fallback string) string {
 
 func getEnvInt(key string, fallback int) int {
 	if v, ok := os.LookupEnv(key); ok {
-		if i, err := strconv.Atoi(v); err == nil {
+		i, err := strconv.Atoi(v)
+		if err == nil {
 			return i
 		}
 	}
@@ -130,7 +131,8 @@ func getEnvInt(key string, fallback int) int {
 
 func getEnvBool(key string, fallback bool) bool {
 	if v, ok := os.LookupEnv(key); ok {
-		if b, err := strconv.ParseBool(v); err == nil {
+		b, err := strconv.ParseBool(v)
+		if err == nil {
 			return b
 		}
 	}
