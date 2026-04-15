@@ -21,7 +21,8 @@ func TestIsValidFormat(t *testing.T) {
 		}
 	}
 
-	invalidFormats := []string{"", "unknown", "yaml", "json"}
+	// Note: "surge" and "quan" are not supported in this fork
+	invalidFormats := []string{"", "unknown", "yaml", "json", "surge", "quan"}
 	for _, f := range invalidFormats {
 		if IsValidFormat(f) {
 			t.Errorf("expected format %q to be invalid", f)
@@ -32,9 +33,9 @@ func TestIsValidFormat(t *testing.T) {
 // TestParseProxyLines verifies that proxy lines are parsed correctly
 func TestParseProxyLines(t *testing.T) {
 	tests := []struct {
-		name     string
-		input    string
-		wantLen  int
+		name    string
+		input   string
+		wantLen int
 	}{
 		{
 			name:    "empty input",
@@ -56,6 +57,12 @@ func TestParseProxyLines(t *testing.T) {
 			input:   "# this is a comment\nss://YWVzLTI1Ni1nY206cGFzc3dvcmQ=@192.168.1.1:8388#test",
 			wantLen: 1,
 		},
+		{
+			// Added: make sure Windows-style line endings are handled
+			name:    "crlf line endings",
+			input:   "ss://YWVzLTI1Ni1nY206cGFzc3dvcmQ=@192.168.1.1:8388#test1\r\nss://YWVzLTI1Ni1nY206cGFzc3dvcmQ=@192.168.1.2:8388#test2",
+			wantLen: 2,
+		},
 	}
 
 	for _, tt := range tests {
@@ -71,8 +78,8 @@ func TestParseProxyLines(t *testing.T) {
 // TestDetectProtocol verifies protocol detection from URI strings
 func TestDetectProtocol(t *testing.T) {
 	tests := []struct {
-		uri      string
-		want     string
+		uri  string
+		want string
 	}{
 		{"ss://example", "ss"},
 		{"vmess://example", "vmess"},
