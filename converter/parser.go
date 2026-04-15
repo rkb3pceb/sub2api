@@ -85,7 +85,11 @@ func ParseVmessURI(uri string) (*ProxyNode, error) {
 			// Try URL-safe base64 (some providers use this variant)
 			decoded, err = base64.URLEncoding.DecodeString(encoded)
 			if err != nil {
-				return nil, fmt.Errorf("failed to decode vmess URI: %w", err)
+				// Last resort: try raw URL-safe base64 (no padding + URL-safe alphabet)
+				decoded, err = base64.RawURLEncoding.DecodeString(encoded)
+				if err != nil {
+					return nil, fmt.Errorf("failed to decode vmess URI: %w", err)
+				}
 			}
 		}
 	}
@@ -122,16 +126,4 @@ func ParseTrojanURI(uri string) (*ProxyNode, error) {
 	node.Server = u.Hostname()
 
 	port, err := strconv.Atoi(u.Port())
-	if err != nil {
-		return nil, fmt.Errorf("invalid port in trojan URI: %w", err)
-	}
-	node.Port = port
-
-	// Parse query parameters for extra options
-	for k, v := range u.Query() {
-		if len(v) > 0 {
-			node.Extra[k] = v[0]
-		}
-	}
-
-	if sni :=
+	if 
