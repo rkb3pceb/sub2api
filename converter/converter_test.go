@@ -63,6 +63,12 @@ func TestParseProxyLines(t *testing.T) {
 			input:   "ss://YWVzLTI1Ni1nY206cGFzc3dvcmQ=@192.168.1.1:8388#test1\r\nss://YWVzLTI1Ni1nY206cGFzc3dvcmQ=@192.168.1.2:8388#test2",
 			wantLen: 2,
 		},
+		{
+			// Added: lines with only whitespace should be treated as empty and skipped
+			name:    "whitespace-only lines are skipped",
+			input:   "ss://YWVzLTI1Ni1nY206cGFzc3dvcmQ=@192.168.1.1:8388#test1\n   \nss://YWVzLTI1Ni1nY206cGFzc3dvcmQ=@192.168.1.2:8388#test2",
+			wantLen: 2,
+		},
 	}
 
 	for _, tt := range tests {
