@@ -100,6 +100,7 @@ func NormalizeFormat(format string) (string, error) {
 
 // FilterByProtocol returns only those proxy lines whose protocol matches
 // one of the provided protocols. If protocols is empty, all lines are returned.
+// Unknown/unparseable lines are always skipped when a filter is active.
 func FilterByProtocol(lines []string, protocols ...ProxyProtocol) []string {
 	if len(protocols) == 0 {
 		return lines
@@ -111,7 +112,12 @@ func FilterByProtocol(lines []string, protocols ...ProxyProtocol) []string {
 
 	result := make([]string, 0, len(lines))
 	for _, line := range lines {
-		if _, ok := allowed[DetectProtocol(line)]; ok {
+		proto := DetectProtocol(line)
+		// Skip lines we couldn't identify rather than passing them through.
+		if proto == ProtocolUnknown {
+			continue
+		}
+		if _, ok := allowed[proto]; ok {
 			result = append(result, line)
 		}
 	}
